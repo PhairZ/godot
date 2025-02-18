@@ -131,6 +131,7 @@ private:
 	String code_region_end_string;
 	String code_region_start_tag = "region";
 	String code_region_end_tag = "endregion";
+	String regex_code_region_excluded_suffixes = "\\w=+\\-*\\/\\[.";
 	void _update_code_region_tags();
 
 	/* Delimiters */

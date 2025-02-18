@@ -35,7 +35,12 @@
 #include "core/os/keyboard.h"
 #include "core/string/string_builder.h"
 #include "core/string/ustring.h"
+#include "modules/regex/regex.h"
 #include "scene/theme/theme_db.h"
+
+#ifdef TOOLS_ENABLED
+#include "editor/editor_settings.h"
+#endif // TOOLS_ENABLED
 
 void CodeEdit::_apply_project_settings() {
 	symbol_tooltip_timer->set_wait_time(GLOBAL_GET("gui/timers/tooltip_delay_sec"));
@@ -1872,8 +1877,11 @@ bool CodeEdit::is_line_code_region_start(int p_line) const {
 	if (is_in_string(p_line) != -1) {
 		return false;
 	}
-	Vector<String> split = get_line(p_line).strip_edges().split_spaces(1);
-	return split.size() > 0 && split[0] == code_region_start_string;
+
+	String es = EditorSettings::get_singleton()->get("text_editor/behavior/comments/regex_code_region_excluded_suffixes");
+	RegEx re = RegEx("^\\s*" + code_region_start_string + "(?![" + es + "])");
+
+	return re.search(get_line(p_line)).is_valid();
 }
 
 bool CodeEdit::is_line_code_region_end(int p_line) const {
@@ -1884,8 +1892,11 @@ bool CodeEdit::is_line_code_region_end(int p_line) const {
 	if (is_in_string(p_line) != -1) {
 		return false;
 	}
-	Vector<String> split = get_line(p_line).strip_edges().split_spaces(1);
-	return split.size() > 0 && split[0] == code_region_end_string;
+
+	String es = EditorSettings::get_singleton()->get("text_editor/behavior/comments/regex_code_region_excluded_suffixes");
+	RegEx re = RegEx("^\\s*" + code_region_end_string + "(?![" + es + "])");
+
+	return re.search(get_line(p_line)).is_valid();
 }
 
 /* Delimiters */

@@ -36,6 +36,7 @@
 #include "core/config/project_settings.h"
 #include "editor/editor_settings.h"
 #include "editor/themes/editor_theme_manager.h"
+#include "modules/regex/regex.h"
 #include "scene/gui/text_edit.h"
 
 Dictionary GDScriptSyntaxHighlighter::_get_line_syntax_highlighting_impl(int p_line) {
@@ -152,10 +153,11 @@ Dictionary GDScriptSyntaxHighlighter::_get_line_syntax_highlighting_impl(int p_l
 						}
 						// "#region" and "#endregion" only highlighted if they're the first region on the line.
 						if (color_regions[c].type == ColorRegion::TYPE_CODE_REGION) {
-							Vector<String> str_stripped_split = str.strip_edges().split_spaces(1);
-							if (!str_stripped_split.is_empty() &&
-									str_stripped_split[0] != "#region" &&
-									str_stripped_split[0] != "#endregion") {
+							String es = EditorSettings::get_singleton()->get("text_editor/behavior/comments/regex_code_region_excluded_suffixes");
+							RegEx re_region = RegEx("^\\s*#region(?![" + es + "])");
+							RegEx re_endregion = RegEx("^\\s*#endregion(?![" + es + "])");
+
+							if (re_region.search(str).is_null() && re_endregion.search(str).is_null()) {
 								match = false;
 							}
 						}

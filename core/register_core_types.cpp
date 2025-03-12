@@ -69,6 +69,7 @@
 #include "core/math/expression.h"
 #include "core/math/random_number_generator.h"
 #include "core/math/triangle_mesh.h"
+#include "core/object/a_compute.h"
 #include "core/object/class_db.h"
 #include "core/object/script_language_extension.h"
 #include "core/object/undo_redo.h"
@@ -166,6 +167,7 @@ void register_core_types() {
 	GDREGISTER_CLASS(Resource);
 	GDREGISTER_VIRTUAL_CLASS(MissingResource);
 	GDREGISTER_CLASS(Image);
+	GDREGISTER_CLASS(ACompute);
 
 	GDREGISTER_CLASS(Shortcut);
 	GDREGISTER_ABSTRACT_CLASS(InputEvent);
